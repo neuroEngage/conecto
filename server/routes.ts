@@ -20,7 +20,12 @@ const sessionParser = session({
   secret: process.env.SESSION_SECRET || "meetup-adventures-secret",
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }
+  cookie: {
+    secure: process.env.NODE_ENV === "production", // true in production (Render)
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 'none' for cross-site cookies
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 });
 
 // Helper function to convert ZodErrors to readable messages
